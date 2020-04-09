@@ -32,45 +32,53 @@ def list_log_sinks
   # [END logging_list_sinks]
 end
 
-def create_log_sink
+def create_log_sink bucket_name:, sink_name:
   # [START logging_create_sink]
   require "google/cloud/logging"
 
   logging = Google::Cloud::Logging.new
   storage = Google::Cloud::Storage.new
-  bucket  = storage.create_bucket "my-logs-bucket"
+  # bucket_name = "name-of-my-storage-bucket"
+  bucket  = storage.create_bucket bucket_name
 
   # Grant owner permission to Cloud Logging service
   email = "cloud-logs@google.com"
   bucket.acl.add_owner "group-#{email}"
 
-  sink = logging.create_sink "my-sink", "storage.googleapis.com/#{bucket.id}"
+  # sink_name = "name-of-my-sink"
+  sink = logging.create_sink sink_name, "storage.googleapis.com/#{bucket.id}"
+  puts "#{sink.name}: #{sink.filter} -> #{sink.destination}"
   # [END logging_create_sink]
 end
 
-def update_log_sink
+def update_log_sink bucket_name:, sink_name:
   # [START logging_update_sink]
   require "google/cloud/logging"
 
   logging = Google::Cloud::Logging.new
   storage = Google::Cloud::Storage.new
-  bucket  = storage.bucket "new-destination-bucket"
-  sink    = logging.sink "my-sink"
+  # bucket_name = "name-of-my-storage-bucket"
+  bucket  = storage.create_bucket bucket_name
+  # sink_name = "name-of-my-sink"
+  sink    = logging.sink sink_name
 
   sink.destination = "storage.googleapis.com/#{bucket.id}"
 
   sink.save
+  puts "Updated sink destination for #{sink.name} to #{sink.destination}"
   # [END logging_update_sink]
 end
 
-def delete_log_sink
+def delete_log_sink sink_name:
   # [START logging_delete_sink]
   require "google/cloud/logging"
 
   logging = Google::Cloud::Logging.new
 
-  sink = logging.sink "my-sink"
+  # sink_name = "name-of-my-sink"
+  sink = logging.sink sink_name
   sink.delete
+  puts "Deleted sink: #{sink.name}"
   # [END logging_delete_sink]
 end
 

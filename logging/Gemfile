@@ -19,7 +19,12 @@ gem "google-cloud-logging"
 group :test do
   gem "google-cloud-storage"
   gem "rack-test"
+  gem "minitest", "~> 5.13"
+  gem "rake"
   gem "rspec"
   gem "rspec-retry"
   gem "rspec_junit_formatter"
 end
+
+gem "pry"
+gem "irb"
